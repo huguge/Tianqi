@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/weather_item_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/weather_week"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="星期一"
+        android:textColor="@color/white"
+        android:textSize="@dimen/android_public_textsize_17pt" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2.0dp"
+        android:layout_marginTop="2.0dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10.0dp"
+            android:layout_marginTop="5.0dp"
+            android:gravity="center|left"
+            android:text="AQI"
+            android:textColor="@color/white"
+            android:textSize="@dimen/android_public_textsize_15pt" />
+
+        <TextView
+            android:id="@+id/weather_aqi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.0dp"
+            android:gravity="center|right"
+            android:text="97"
+            android:textColor="@color/white"
+            android:textSize="@dimen/android_public_textsize_15pt" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/weather_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/weather_drawable_day00" />
+    
+    <TextView
+        android:id="@+id/weather_temperature" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="26℃~33℃"
+        android:textColor="@color/white"
+        android:textSize="@dimen/android_public_textsize_15pt"
+        android:gravity="center"
+        />
+    
+    <TextView
+        android:id="@+id/weather_status"  
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="晴天"
+        android:textColor="@color/white"
+        android:textSize="@dimen/android_public_textsize_15pt"
+        android:gravity="center"
+        />
+
+</LinearLayout>

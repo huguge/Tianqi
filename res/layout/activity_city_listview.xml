@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45.0dp"
+        android:background="#58AB82" >
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="50.0dp"
+            android:layout_height="50.0dp"
+            android:layout_alignParentLeft="true"
+            android:contentDescription="@null"
+            android:src="@drawable/icon_back_normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="切换城市"
+            android:textColor="#EEF3F7"
+            android:textSize="15.0sp" />
+    </RelativeLayout>
+
+    
+    <com.eightzero.tianqi.view.ClearEditText
+        android:id="@+id/filter_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dp"
+        android:layout_marginRight="10.0dp"
+        android:layout_marginTop="5.0dp"
+        android:background="@drawable/sorlistview_search_bar_edit_selector"
+        android:drawableLeft="@drawable/sorlistview_search_bar_icon_normal"
+        android:hint="城市中文名称或拼音"
+        android:paddingLeft="5.0dp"
+        android:singleLine="true"
+        android:textColorHint="#B8B8B8"
+        android:textSize="15.0sp" />
+    
+    
+    <!-- 选择城市 -->
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="30.0dp"
+        android:layout_marginTop="5.0dp"
+        android:background="#F6F6F4" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10.0dp"
+            android:text="选择城市"
+            android:textColor="#58AB82"
+            android:textSize="15.0dp" />
+    </RelativeLayout>
+    
+      <!-- 我的定位 -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="30.0dp"
+        android:background="#fff"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dp"
+            android:text="定位城市:"
+            android:textColor="#000000"
+            android:textSize="14.0sp" />
+
+        <TextView
+            android:id="@+id/tv_my_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8.0dp"
+            android:text=""
+            android:textColor="#000000"
+            android:textSize="14.0sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <ListView
+            android:id="@+id/country_lvcountry"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:divider="@null" />
+
+        <TextView
+            android:id="@+id/dialog"
+            android:layout_width="80.0dip"
+            android:layout_height="80.0dip"
+            android:layout_gravity="center"
+            android:background="@drawable/sorlistview_show_head_toast_bg"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="30.0sp"
+            android:visibility="invisible" />
+
+        <!-- 右边索引状态栏 -->
+
+        <com.eightzero.tianqi.view.SideBar
+            android:id="@+id/sidrbar"
+            android:layout_width="30.0dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center" />
+    </FrameLayout>
+    
+
+</LinearLayout>

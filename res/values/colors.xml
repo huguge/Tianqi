@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color><!-- 白色 -->
+    <color name="black">#000000</color><!-- 黑色 -->
+    <color name="transparent">#00000000</color><!-- 透明 -->
+    <color name="view_color">#E5E5EA</color><!-- view的浅灰色 -->
+    <color name="text_color">#6B696B</color><!-- 字体灰色 -->
+    <color name="click_gray_background">#6B696B</color><!-- 字体灰色 -->
+    <color name="layout_press">#E9E9EC</color><!-- 点击的灰色 -->
+    
+</resources>
