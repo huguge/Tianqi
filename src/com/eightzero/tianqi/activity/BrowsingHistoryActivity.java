@@ -7,8 +7,6 @@ import android.os.Bundle;
 
 public class BrowsingHistoryActivity extends Activity{
 
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
