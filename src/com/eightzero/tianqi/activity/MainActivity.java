@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
 		connection.openConnection(Constants.JUHE_IP+"cityname="+cityName+"&dtype="+Constants.JUHE_DTYPE+"&key="+Constants.JUHE_APPKEY, "get", new CallBack() {
 			@Override
 			public void executeResult(String result) {
-				System.out.println(result + "1111111111111111111111111");
+				System.out.println(result);
 			}
 		});
 	}
