@@ -17,10 +17,12 @@ public class BrowsingHistoryActivity extends Activity{
 		initListener();
 	}
 
+	// 初始化界面
 	private void initView() {
 		
 	}	
 	
+	// 初始化监听
 	private void initListener() {
 		
 	}
