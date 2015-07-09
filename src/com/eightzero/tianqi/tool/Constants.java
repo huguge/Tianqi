@@ -13,4 +13,7 @@ public class Constants {
 	public static final String TYPE_F = "index_f";
 	//常规气象数据接口
 	public static final String TYPE_V = "index_v";
+	
+	// 当前用户的地址信息
+	public static final String USER_LOCATION_INFORMATION = "user_location_information";
 }

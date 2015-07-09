@@ -24,10 +24,10 @@ public class Application extends android.app.Application{
 		LocationClientOption option = new LocationClientOption();//声明LocationClient类 
 		option.setOpenGps(true);//打开gps定位
 		option.setAddrType("all");
-		option.setServiceName(this.getPackageName());
-		option.setPriority(LocationClientOption.NetWorkFirst); //设置优先级，此为网络优先
+		option.setProdName(this.getPackageName());
+//		option.setPriority(LocationClientOption.NetWorkFirst); //设置优先级，此为网络优先
 		option.setScanSpan(0);
-		option.disableCache(true);
+//		option.disableCache(true);
 		return option;
 	}
 	

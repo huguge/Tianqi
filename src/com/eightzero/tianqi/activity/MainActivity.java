@@ -1,5 +1,18 @@
 package com.eightzero.tianqi.activity;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -12,16 +25,6 @@ import com.eightzero.tianqi.tool.NetworkHelper;
 import com.eightzero.tianqi.tool.SharePreferenceUtil;
 import com.eightzero.tianqi.view.SlidingMenu;
 import com.example.tianqi.R;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
@@ -39,6 +42,8 @@ public class MainActivity extends Activity {
 	// 会员中心点击layout
 	private RelativeLayout memberCenter;
 	private RelativeLayout browsingHistory;
+	
+	private ImageView changeCity;// 地图
 	
 	private boolean flag;
 
@@ -60,6 +65,7 @@ public class MainActivity extends Activity {
 		imageViewmenu = (ImageView) findViewById(R.id.btn_menu);
 		memberCenter = (RelativeLayout)findViewById(R.id.rlyt_member_center);
 		browsingHistory = (RelativeLayout)findViewById(R.id.rlyt_browsing_history);
+		changeCity = (ImageView)findViewById(R.id.btn_switch_city);
 //		memberCenter.setBackgroundResource(R.drawable.layout_background_color);//点击灰色效果
 		// 打开网络才能访问服务器
 		if (NetworkHelper.getNetworkType(MainActivity.this) != NetworkHelper.NONE) {
@@ -101,7 +107,6 @@ public class MainActivity extends Activity {
 	 * 定位监听
 	 */
 	BDLocationListener mBdLocationListener = new BDLocationListener() {
-		@Override
 		public void onReceivePoi(BDLocation location) {
 			if (location == null) {
 				return;
@@ -112,6 +117,7 @@ public class MainActivity extends Activity {
 		public void onReceiveLocation(BDLocation location) {
 			// 获取定位的到当前的城市
 			cityName = location.getCity();
+			saveLocation(location);// 将数据保存到sp中
 			cityNametText.setText(cityName.substring(0,cityName.length()-1));
 			sharePreferenceUtil.setCity(cityName.substring(0,cityName.length()-1));
 			MyToast.showLong(MainActivity.this, "定位后的城市是" + cityName);
@@ -121,6 +127,26 @@ public class MainActivity extends Activity {
 		}
 	};
 
+	// 保存当前用户的地址信息
+	private void saveLocation(BDLocation location) {
+		SharedPreferences sharedPreferences = getSharedPreferences(Constants.USER_LOCATION_INFORMATION,
+				Context.MODE_PRIVATE); // 私有数据
+		Editor editor = sharedPreferences.edit();// 获取编辑器
+		editor.putString("province", location.getProvince());
+		editor.putString("city", location.getCity());
+		editor.putString("cityCode", location.getCityCode());
+		editor.putString("district", location.getDistrict());
+		editor.putString("latitude", String.valueOf(location.getLatitude()));
+		editor.putString("longitude", String.valueOf(location.getLongitude()));
+		editor.putString("addrStr", location.getAddrStr());
+		editor.putString("direction", String.valueOf(location.getDirection()));
+		editor.putString("street", location.getStreet());
+		editor.putString("streetNumber", location.getStreetNumber());
+		editor.putString("radius", String.valueOf(location.getRadius()));
+		editor.putString("locType", String.valueOf(location.getLocType()));
+		editor.commit();// 提交保存
+	}
+	
 	/**
 	 * 初始化监听
 	 */
@@ -154,6 +180,23 @@ public class MainActivity extends Activity {
 				Intent intent = new Intent(getApplicationContext(),BrowsingHistoryActivity.class);
 				startActivity(intent);
 				overridePendingTransition(R.anim.push_left_in, R.anim.fade_out);
+			}
+		});
+		
+		// 进入地图
+		changeCity.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+//				Intent intent = new Intent(MainActivity.this,ShowMapAcitivity.class);// 进入地图
+				Intent intent = new Intent(MainActivity.this,RoutePlanningActivity.class);// 进入路线规划
+				Bundle bundle = new Bundle();
+				bundle.putString("city","太原");// 当前所在城市
+				bundle.putString("shopAddress", "南中环殷家堡小区");// 商家地址
+				bundle.putDouble("shopLongitude", 112.553375);// 经度
+				bundle.putDouble("shopLatitude", 37.798784);// 纬度
+				intent.putExtras(bundle);// 传递bundle
+				startActivity(intent);
 			}
 		});
 	}

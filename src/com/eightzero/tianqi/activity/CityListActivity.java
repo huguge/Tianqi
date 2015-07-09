@@ -71,7 +71,7 @@ public class CityListActivity extends Activity {
 		dialog = (TextView) findViewById(R.id.dialog);
 		sideBar.setTextView(dialog);
 		sortListView = (ListView) findViewById(R.id.country_lvcountry);
-		SourceDateList = filledData(getResources().getStringArray(R.array.date));
+//		SourceDateList = filledData(getResources().getStringArray(R.array.date));
 		// 根据a-z进行排序源数据
 		Collections.sort(SourceDateList, pinyinComparator);
 		adapter = new CityAdapter(this, SourceDateList);
