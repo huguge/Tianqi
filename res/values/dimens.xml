@@ -418,4 +418,6 @@
     <dimen name="header_footer_left_right_padding">24.0dip</dimen>
     <dimen name="header_footer_top_bottom_padding">12.0dip</dimen>
     <dimen name="category_wap_first_height">@dimen/pub_margin_or_padding_space_ninety</dimen>
+    
+    <dimen name="padding_5dp">5dp</dimen>
 </resources>

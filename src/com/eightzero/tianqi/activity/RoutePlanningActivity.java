@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -25,7 +24,6 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
@@ -61,31 +59,23 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
 	private MapView mapView;
 	private BaiduMap bdMap;
 
-	private Button driveBtn;// 驾车
-	private Button walkBtn;// 步行
-	private Button transitBtn;// 换乘 （公交）
-
-	//搜索相关
-    private RoutePlanSearch mSearch = null;    // 路径规划搜索接口
+	// 搜索相关
+    private RoutePlanSearch mSearch = null;// 路径规划搜索接口
     
     private List<TransitRouteLine> transitLineList = null;// 换乘线路
     private int busLineIndex = 0;
     
-	//浏览路线节点相关
-    Button mBtnPre = null;//上一个节点
-    Button mBtnNext = null;//下一个节点
-    int nodeIndex = -1;//节点索引,供浏览节点时使用
-    RouteLine route = null;
+	// 浏览路线节点相关
+	Button mBtnPre = null;// 上一个节点
+	Button mBtnNext = null;// 下一个节点
+	int nodeIndex = -1;// 节点索引,供浏览节点时使用
+	RouteLine route = null;// 线路详情
     
     OverlayManager routeOverlay = null;
     boolean useDefaultIcon = false;
     
-    private TextView popupText = null;//泡泡view
+	private TextView popupText = null;// 泡泡view
     
-	// marker
-	private Marker marker;
-	private Marker userMarker;
-	
 	LatLng userLatLng;// 用户经纬度
 	LatLng shopLatLng;// 商户经纬度
 	
@@ -98,8 +88,8 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
 	// 用户地址信息
 	private Double userLatitude;
 	private Double userLongitude;
-	private String userAddrStr;
-	private String street;
+//	private String userAddrStr;
+//	private String street;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -132,9 +122,6 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
 		mapView = (MapView) findViewById(R.id.mapview);
 		mBtnPre = (Button) findViewById(R.id.pre);
         mBtnNext = (Button) findViewById(R.id.next);
-        driveBtn = (Button) findViewById(R.id.drive);
-		transitBtn = (Button) findViewById(R.id.transit);
-		walkBtn = (Button) findViewById(R.id.walk);
         
         mBtnPre.setVisibility(View.INVISIBLE);
         mBtnNext.setVisibility(View.INVISIBLE);
@@ -147,7 +134,6 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
 		bdMap = mapView.getMap();// 获取百度地图对象
 		
 		userLatLng = new LatLng(userLatitude,userLongitude);
-//		LatLng userLatLng = new LatLng(37.872347,112.573542);
 		// 设定商家位置(中心点)坐标
 		shopLatLng = new LatLng(shopLatitude,shopLontitude);// 注意这里的构造方法的参数-->(latitude,longitude),而不是百度地图上得到的是（longitude，latitude）
 		// 定义地图状态
@@ -171,8 +157,9 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
 				.icon(bitmap)// 设置marker的图标
 				.zIndex(9)// 设置marker的所在层级
 				.draggable(true);// 设置手势拖拽
+		
 		// 在地图上添加marker，并显示
-		marker = (Marker) bdMap.addOverlay(options);
+		bdMap.addOverlay(options);
 		
 		// 显示商家所在信息弹出窗
 		displayInfoWindow(shopLatLng,shopAddress);
@@ -188,7 +175,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
 				.zIndex(9)// 设置marker的所在层级
 				.draggable(true);// 设置手势拖拽
 		// 在地图上添加marker，并显示
-		userMarker = (Marker) bdMap.addOverlay(options1);
+		bdMap.addOverlay(options1);
 		
 	}
 	
@@ -203,10 +190,11 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
         mBtnPre.setVisibility(View.INVISIBLE);
         mBtnNext.setVisibility(View.INVISIBLE);
         bdMap.clear();
-        //设置起终点信息，对于tranist search 来说，城市名无意义
+		// 设置起终点信息，对于tranist search 来说，城市名无意义
 //        PlanNode stNode = PlanNode.withCityNameAndPlaceName(city, userAddrStr);
 //        PlanNode enNode = PlanNode.withCityNameAndPlaceName(city, shopAddress);
         
+        // 设置起终点经纬度
         PlanNode stNode = PlanNode.withLocation(userLatLng);
         PlanNode enNode = PlanNode.withLocation(shopLatLng);
 
@@ -233,9 +221,6 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
      * @param v
      */
     public void nodeClick(View v) {
-//    	if (busLineIndex >= transitLineList.size()) {
-//			busLineIndex = 0;
-//		}
         if (route == null || route.getAllStep() == null) {
             return;
         }
@@ -299,28 +284,6 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
         bdMap.showInfoWindow(new InfoWindow(popupText, nodeLocation, 0));
     }
     
-    /**
-     * 切换路线图标，刷新地图使其生效
-     * 注意： 起终点图标使用中心对齐.
-     */
-    public void changeRouteIcon(View v) {
-        if (routeOverlay == null) {
-            return;
-        }
-        if (useDefaultIcon) {
-            ((Button) v).setText("自定义起终点图标");
-            Toast.makeText(this,"将使用系统起终点图标",Toast.LENGTH_SHORT).show();
-        } else {
-            ((Button) v).setText("系统起终点图标");
-            Toast.makeText(this,"将使用自定义起终点图标",Toast.LENGTH_SHORT).show();
-        }
-        useDefaultIcon = !useDefaultIcon;
-        routeOverlay.removeFromMap();
-        routeOverlay.addToMap();
-    }
-	
-    
-    
 	@Override
 	public void onGetDrivingRouteResult(DrivingRouteResult result) {
 		if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
@@ -352,8 +315,8 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
             Toast.makeText(RoutePlanningActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
         }
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
-            //起终点或途经点地址有岐义，通过以下接口获取建议查询信息
-            //result.getSuggestAddrInfo()
+			// 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
+			// result.getSuggestAddrInfo()
             return;
         }
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
@@ -380,8 +343,8 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
             Toast.makeText(RoutePlanningActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
         }
         if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
-            //起终点或途经点地址有岐义，通过以下接口获取建议查询信息
-            //result.getSuggestAddrInfo()
+			// 起终点或途经点地址有岐义，通过以下接口获取建议查询信息
+			// result.getSuggestAddrInfo()
             return;
         }
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
@@ -399,7 +362,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
         }
 	}
 	
-	//定制RouteOverly
+	// 定制RouteOverly
     private class MyDrivingRouteOverlay extends DrivingRouteOverlay {
 
         public MyDrivingRouteOverlay(BaiduMap baiduMap) {
@@ -474,7 +437,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
 		SharedPreferences sharedPreferences = getSharedPreferences(Constants.USER_LOCATION_INFORMATION, Context.MODE_PRIVATE);
 		userLatitude = Double.parseDouble(sharedPreferences.getString("latitude", ""));
 		userLongitude = Double.parseDouble(sharedPreferences.getString("longitude", ""));
-		userAddrStr = sharedPreferences.getString("addrStr", "");
+//		userAddrStr = sharedPreferences.getString("addrStr", "");
 	}
 	
 	/**
