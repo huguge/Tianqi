@@ -233,9 +233,9 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
      * @param v
      */
     public void nodeClick(View v) {
-    	if (busLineIndex >= transitLineList.size()) {
-			busLineIndex = 0;
-		}
+//    	if (busLineIndex >= transitLineList.size()) {
+//			busLineIndex = 0;
+//		}
         if (route == null || route.getAllStep() == null) {
             return;
         }
@@ -248,7 +248,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
             	nodeIndex++;
             } else {
             	// 如果当前换乘线路小于总换乘线路，就继续进行换乘指引
-        		if (busLineIndex < transitLineList.size()-1) {
+        		if (busLineIndex < transitLineList.size()-1 && busLineIndex != -1) {
         			busLineIndex++;// 换乘线路加
                 	route = transitLineList.get(busLineIndex);
                 	nodeIndex = 0;
@@ -261,7 +261,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
         		nodeIndex--;
         	} else { 
         		// 如果当前换乘线路大于等于总线路，就回到线路1
-        		if (busLineIndex >= transitLineList.size()-1) {
+        		if (busLineIndex >= transitLineList.size()-1 && busLineIndex != -1) {
         			busLineIndex = 0;
                 	route = transitLineList.get(busLineIndex);
                 	nodeIndex = 0;
@@ -333,6 +333,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
         }
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
             nodeIndex = -1;
+            busLineIndex = -1;// 给换乘线路下标赋值，使不与自驾线路混淆
             mBtnPre.setVisibility(View.VISIBLE);
             mBtnNext.setVisibility(View.VISIBLE);
             route = result.getRouteLines().get(0);
@@ -357,6 +358,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
         }
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
             nodeIndex = -1;
+            busLineIndex = 0;// 重新对换乘线路初始值赋值
             mBtnPre.setVisibility(View.VISIBLE);
             mBtnNext.setVisibility(View.VISIBLE);
             for (TransitRouteLine line:result.getRouteLines()) {
@@ -384,6 +386,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
         }
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
             nodeIndex = -1;
+            busLineIndex = -1;// 给换乘线路下标赋值，使不与步行线路混淆
             mBtnPre.setVisibility(View.VISIBLE);
             mBtnNext.setVisibility(View.VISIBLE);
             route = result.getRouteLines().get(0);
