@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,21 +17,25 @@ import android.widget.TextView;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
-import com.eightzero.tianqi.tool.Application;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.SDKInitializer;
 import com.eightzero.tianqi.tool.BaseConnection;
 import com.eightzero.tianqi.tool.CallBack;
 import com.eightzero.tianqi.tool.Constants;
 import com.eightzero.tianqi.tool.MyToast;
 import com.eightzero.tianqi.tool.NetworkHelper;
-import com.eightzero.tianqi.tool.SharePreferenceUtil;
 import com.eightzero.tianqi.view.SlidingMenu;
 import com.example.tianqi.R;
 
 public class MainActivity extends Activity {
 
+	// 定位客户端
 	private LocationClient mLocationClient;
-	private Application mApplication;
-	private SharePreferenceUtil sharePreferenceUtil;
+	// 定位监听器
+	public MyLocationListener mMyLocationListener;
+	
+//	private Application mApplication;
+//	private SharePreferenceUtil sharePreferenceUtil;
 	// 地位所在城市
 	private TextView cityNametText;
 	// 侧滑菜单按钮
@@ -50,9 +55,14 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// 注意该方法要再setContentView方法之前实现
+		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_main);
-		initDate();
+//		initDate();
 		initView();
+		// 初始化定位
+		initMyLocation();
 		initOnclickListener();
 	}
 
@@ -69,8 +79,8 @@ public class MainActivity extends Activity {
 //		memberCenter.setBackgroundResource(R.drawable.layout_background_color);//点击灰色效果
 		// 打开网络才能访问服务器
 		if (NetworkHelper.getNetworkType(MainActivity.this) != NetworkHelper.NONE) {
-			mLocationClient.start();// 启动定位
-			mLocationClient.requestLocation();
+//			mLocationClient.start();// 启动定位
+//			mLocationClient.requestLocation();
 		} else {
 			MyToast.showShort(MainActivity.this, R.string.net_err);
 		}
@@ -79,14 +89,61 @@ public class MainActivity extends Activity {
 	/**
 	 * 初始化数据
 	 */
-	private void initDate() {
-		mApplication = Application.getInstance();
-		sharePreferenceUtil = mApplication.getSharePreferenceUtil();
-		mLocationClient = mApplication.getLocationClient();
-		MyToast.showShort(this, "正在定位...");
-		mLocationClient.registerLocationListener(mBdLocationListener);
-	}
+//	private void initDate() {
+//		mApplication = Application.getInstance();
+//		sharePreferenceUtil = mApplication.getSharePreferenceUtil();
+//		mLocationClient = mApplication.getLocationClient();
+//		MyToast.showShort(this, "正在定位...");
+//		mLocationClient.registerLocationListener(mBdLocationListener);
+//	}
 
+	
+	// 初始化定位相关代码
+	private void initMyLocation() {
+//		sharePreferenceUtil = getApplicationContext().getSharePreferenceUtil();
+		mLocationClient = new LocationClient(getApplicationContext());
+		mMyLocationListener = new MyLocationListener();
+		mLocationClient.registerLocationListener(mMyLocationListener);
+		
+		// 设定相关配置
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 是否开启GPS
+		option.setIsNeedAddress(true);// 是否需要地址信息
+		option.setCoorType("bd0911");// 设置坐标类型
+		option.setScanSpan(100000);// 设置扫描间隔，单位(毫秒)
+		mLocationClient.setLocOption(option);
+	}
+	
+	/**
+	 * 实现定位回调监听
+	 * @author huweyiang
+	 * @Description TODO
+	 * @date 2015年7月9日
+	 * @time 下午5:20:21
+	 */
+	public class MyLocationListener implements BDLocationListener{
+
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			if (location == null)
+				return;
+			// 获取定位的到当前的城市
+			cityName = location.getCity();
+			saveLocation(location);// 将数据保存到sp中
+			if (cityName != null && !"".equals(cityName.trim())) {
+				cityNametText.setText(cityName.substring(0, cityName.length() - 1));
+//				sharePreferenceUtil.setCity(cityName.substring(0,cityName.length() - 1));
+				MyToast.showLong(MainActivity.this, "您当前所在=====>" + cityName);
+			} else {
+				MyToast.showLong(MainActivity.this, "抱歉，没有定位到您当前的所在地!");
+			}
+			
+			// updateWeatherInfo(cityName);//定位成功请求天气数据
+			// 定位成功后停止定位
+			mLocationClient.stop();
+		}
+		
+	}
 	
 	/**
 	 * 更新天气界面
@@ -103,35 +160,52 @@ public class MainActivity extends Activity {
 		});
 	}
 
+	@Override
+	protected void onStart() {
+		if (!mLocationClient.isStarted()) {
+			mLocationClient.start();
+		}
+		super.onStart();
+	}
+	
+	@Override
+	protected void onStop() {
+		mLocationClient.stop();
+		super.onStop();
+	}
+	
 	/**
 	 * 定位监听
 	 */
-	BDLocationListener mBdLocationListener = new BDLocationListener() {
-		public void onReceivePoi(BDLocation location) {
-			if (location == null) {
-				return;
-			}
-		}
-
-		@Override
-		public void onReceiveLocation(BDLocation location) {
-			// 获取定位的到当前的城市
-			cityName = location.getCity();
-			saveLocation(location);// 将数据保存到sp中
-			cityNametText.setText(cityName.substring(0,cityName.length()-1));
-			sharePreferenceUtil.setCity(cityName.substring(0,cityName.length()-1));
-			MyToast.showLong(MainActivity.this, "定位后的城市是" + cityName);
-			//updateWeatherInfo(cityName);//定位成功请求天气数据
-			// 定位成功后停止定位
-			mLocationClient.stop();
-		}
-	};
+//	BDLocationListener mBdLocationListener = new BDLocationListener() {
+//		public void onReceivePoi(BDLocation location) {
+//			if (location == null) {
+//				return;
+//			}
+//		}
+//
+//		@Override
+//		public void onReceiveLocation(BDLocation location) {
+//			// 获取定位的到当前的城市
+//			cityName = location.getCity();
+//			saveLocation(location);// 将数据保存到sp中
+//			cityNametText.setText(cityName.substring(0,cityName.length()-1));
+//			sharePreferenceUtil.setCity(cityName.substring(0,cityName.length()-1));
+//			MyToast.showLong(MainActivity.this, "定位后的城市是" + cityName);
+//			//updateWeatherInfo(cityName);//定位成功请求天气数据
+//			// 定位成功后停止定位
+//			mLocationClient.stop();
+//		}
+//	};
 
 	// 保存当前用户的地址信息
 	private void saveLocation(BDLocation location) {
 		SharedPreferences sharedPreferences = getSharedPreferences(Constants.USER_LOCATION_INFORMATION,
 				Context.MODE_PRIVATE); // 私有数据
 		Editor editor = sharedPreferences.edit();// 获取编辑器
+		
+		System.err.println("MainActivity-----中获取到的坐标是--经纬度---"+String.valueOf(location.getLongitude())+","+String.valueOf(location.getLongitude()));
+		
 		editor.putString("province", location.getProvince());
 		editor.putString("city", location.getCity());
 		editor.putString("cityCode", location.getCityCode());

@@ -8,7 +8,7 @@
     <color name="click_gray_background">#6B696B</color><!-- 字体灰色 -->
     <color name="layout_press">#E9E9EC</color><!-- 点击的灰色 -->
     <color name="red">#FF0000</color>
-    <color name="blue">#0000FF</color>
+    <color name="blue">#0066FF</color>
     <color name="green">#00FF00</color>
     
 </resources>

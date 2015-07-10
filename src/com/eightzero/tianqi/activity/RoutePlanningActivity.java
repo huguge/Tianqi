@@ -58,9 +58,6 @@ public class RoutePlanningActivity extends Activity implements OnClickListener {
 	private MapView mapView;
 	private BaiduMap bdMap;
 
-	private EditText startEt;
-	private EditText endEt;
-
 	private String startPlace;// 开始地点
 	private String endPlace;// 结束地点
 
@@ -126,12 +123,13 @@ public class RoutePlanningActivity extends Activity implements OnClickListener {
 		bdMap = mapView.getMap();// 获取百度地图对象
 		
 		LatLng userLatLng = new LatLng(userLatitude,userLongitude);
+//		LatLng userLatLng = new LatLng(37.872347,112.573542);
 		// 设定商家位置(中心点)坐标
 		LatLng shopLatLng = new LatLng(shopLatitude,shopLontitude);// 注意这里的构造方法的参数-->(latitude,longitude),而不是百度地图上得到的是（longitude，latitude）
 		// 定义地图状态
 		MapStatus mMapStatus = new MapStatus.Builder()
 		.target(shopLatLng)
-		.zoom(17)
+		.zoom(16)
 		.build();
 		
 		// 定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
@@ -164,9 +162,9 @@ public class RoutePlanningActivity extends Activity implements OnClickListener {
 		// 圆心覆盖物 设置用户所在地
 		CircleOptions circleOptions = new CircleOptions();
 		circleOptions.center(userLatLng);// 设置圆心坐标
-		circleOptions.fillColor(getResources().getColor(R.color.green));// 圆的填充颜色
+		circleOptions.fillColor(getResources().getColor(R.color.blue));// 圆的填充颜色
 		circleOptions.radius(15);// 设置半径
-		circleOptions.stroke(new Stroke(2, getResources().getColor(R.color.red)));// 设置边框
+		circleOptions.stroke(new Stroke(4, getResources().getColor(R.color.white)));// 设置边框
 		bdMap.addOverlay(circleOptions);
         
 		
