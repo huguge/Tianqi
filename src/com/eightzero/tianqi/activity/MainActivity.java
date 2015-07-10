@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 是否开启GPS
 		option.setIsNeedAddress(true);// 是否需要地址信息
-		option.setCoorType("bd0911");// 设置坐标类型
+		option.setCoorType("bd09ll");// 设置坐标类型,注意这个后面不要写成11，这个是经纬度单词的首字母LL小写
 		option.setScanSpan(100000);// 设置扫描间隔，单位(毫秒)
 		mLocationClient.setLocOption(option);
 	}
@@ -266,9 +266,9 @@ public class MainActivity extends Activity {
 				Intent intent = new Intent(MainActivity.this,RoutePlanningActivity.class);// 进入路线规划
 				Bundle bundle = new Bundle();
 				bundle.putString("city","太原");// 当前所在城市
-				bundle.putString("shopAddress", "南中环殷家堡小区");// 商家地址
-				bundle.putDouble("shopLongitude", 112.553375);// 经度
-				bundle.putDouble("shopLatitude", 37.798784);// 纬度
+				bundle.putString("shopAddress", "大马村");// 商家地址
+				bundle.putDouble("shopLongitude", 112.557268);// 经度
+				bundle.putDouble("shopLatitude", 37.804593);// 纬度
 				intent.putExtras(bundle);// 传递bundle
 				startActivity(intent);
 			}
