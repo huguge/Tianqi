@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -58,7 +57,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
 
 	private MapView mapView;
 	private BaiduMap bdMap;
-
+	
 	// 搜索相关
     private RoutePlanSearch mSearch = null;// 路径规划搜索接口
     
@@ -74,7 +73,7 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
     OverlayManager routeOverlay = null;
     boolean useDefaultIcon = false;
     
-	private TextView popupText = null;// 泡泡view
+	private Button popupBtn = null;// 泡泡view
     
 	LatLng userLatLng;// 用户经纬度
 	LatLng shopLatLng;// 商户经纬度
@@ -176,7 +175,6 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
 				.draggable(true);// 设置手势拖拽
 		// 在地图上添加marker，并显示
 		bdMap.addOverlay(options1);
-		
 	}
 	
 	/**
@@ -275,13 +273,13 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
         }
 		// 移动节点至中心
         bdMap.setMapStatus(MapStatusUpdateFactory.newLatLng(nodeLocation));
-		// show popup
-        popupText = new TextView(RoutePlanningActivity.this);
-        popupText.setBackgroundResource(R.drawable.popup);
-        popupText.setTextColor(0xFF000000);
-        popupText.setTextSize(14);
-        popupText.setText(nodeTitle);
-        bdMap.showInfoWindow(new InfoWindow(popupText, nodeLocation, 0));
+		// show popup,这里popup本来是TextView的，但是TextView出来的文字左右都超出泡泡了，用Button效果居然好一点，就这么用了
+        popupBtn = new Button(RoutePlanningActivity.this);
+        popupBtn.setBackgroundResource(R.drawable.popup);
+        popupBtn.setTextColor(getResources().getColor(R.color.black));
+        popupBtn.setTextSize(14);
+        popupBtn.setText(nodeTitle);
+        bdMap.showInfoWindow(new InfoWindow(popupBtn, nodeLocation, 0));
     }
     
 	@Override
