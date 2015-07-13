@@ -34,6 +34,7 @@ import com.baidu.mapapi.search.core.RouteLine;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.DrivingRouteLine;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
+import com.baidu.mapapi.search.route.DrivingRoutePlanOption.DrivingPolicy;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
 import com.baidu.mapapi.search.route.PlanNode;
@@ -199,14 +200,15 @@ public class RoutePlanningActivity extends Activity implements OnGetRoutePlanRes
         // 实际使用中请对起点终点城市进行正确的设定
         if (v.getId() == R.id.drive) {
             mSearch.drivingSearch((new DrivingRoutePlanOption())
+					.policy(DrivingPolicy.ECAR_DIS_FIRST)// 自驾检索策略：最短距离
                     .from(stNode)
                     .to(enNode));
-        } else if (v.getId() == R.id.transit) {
+        } else if (v.getId() == R.id.transit) {// 换乘暂不设置策略，循环所有路线
             mSearch.transitSearch((new TransitRoutePlanOption())
                     .from(stNode)
                     .city(city)
                     .to(enNode));
-        } else if (v.getId() == R.id.walk) {
+        } else if (v.getId() == R.id.walk) {// 步行无策略
             mSearch.walkingSearch((new WalkingRoutePlanOption())
                     .from(stNode)
                     .to(enNode));
