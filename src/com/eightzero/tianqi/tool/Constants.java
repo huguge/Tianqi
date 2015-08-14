@@ -16,4 +16,6 @@ public class Constants {
 	
 	// 当前用户的地址信息
 	public static final String USER_LOCATION_INFORMATION = "user_location_information";
+	
+	public static final String NETWORK_NONE_PROMPT="请先打开网络！";
 }

@@ -34,8 +34,6 @@ public class MainActivity extends Activity {
 	// 定位监听器
 	public MyLocationListener mMyLocationListener;
 	
-//	private Application mApplication;
-//	private SharePreferenceUtil sharePreferenceUtil;
 	// 地位所在城市
 	private TextView cityNametText;
 	// 侧滑菜单按钮
@@ -61,8 +59,13 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 //		initDate();
 		initView();
-		// 初始化定位
-		initMyLocation();
+		// 打开网络才能访问服务器
+		if (NetworkHelper.getNetworkType(MainActivity.this) != NetworkHelper.NONE) {
+			// 初始化定位
+			initMyLocation();
+		} else {
+			MyToast.showShort(MainActivity.this, R.string.net_err);
+		}
 		initOnclickListener();
 	}
 
@@ -76,31 +79,10 @@ public class MainActivity extends Activity {
 		memberCenter = (RelativeLayout)findViewById(R.id.rlyt_member_center);
 		browsingHistory = (RelativeLayout)findViewById(R.id.rlyt_browsing_history);
 		changeCity = (ImageView)findViewById(R.id.btn_switch_city);
-//		memberCenter.setBackgroundResource(R.drawable.layout_background_color);//点击灰色效果
-		// 打开网络才能访问服务器
-		if (NetworkHelper.getNetworkType(MainActivity.this) != NetworkHelper.NONE) {
-//			mLocationClient.start();// 启动定位
-//			mLocationClient.requestLocation();
-		} else {
-			MyToast.showShort(MainActivity.this, R.string.net_err);
-		}
 	}
 
-	/**
-	 * 初始化数据
-	 */
-//	private void initDate() {
-//		mApplication = Application.getInstance();
-//		sharePreferenceUtil = mApplication.getSharePreferenceUtil();
-//		mLocationClient = mApplication.getLocationClient();
-//		MyToast.showShort(this, "正在定位...");
-//		mLocationClient.registerLocationListener(mBdLocationListener);
-//	}
-
-	
 	// 初始化定位相关代码
 	private void initMyLocation() {
-//		sharePreferenceUtil = getApplicationContext().getSharePreferenceUtil();
 		mLocationClient = new LocationClient(getApplicationContext());
 		mMyLocationListener = new MyLocationListener();
 		mLocationClient.registerLocationListener(mMyLocationListener);
@@ -117,7 +99,6 @@ public class MainActivity extends Activity {
 	/**
 	 * 实现定位回调监听
 	 * @author huweyiang
-	 * @Description TODO
 	 * @date 2015年7月9日
 	 * @time 下午5:20:21
 	 */
@@ -138,9 +119,9 @@ public class MainActivity extends Activity {
 				MyToast.showLong(MainActivity.this, "抱歉，没有定位到您当前的所在地!");
 			}
 			
-			// updateWeatherInfo(cityName);//定位成功请求天气数据
 			// 定位成功后停止定位
 			mLocationClient.stop();
+			// updateWeatherInfo(cityName);//定位成功请求天气数据
 		}
 		
 	}
@@ -174,37 +155,11 @@ public class MainActivity extends Activity {
 		super.onStop();
 	}
 	
-	/**
-	 * 定位监听
-	 */
-//	BDLocationListener mBdLocationListener = new BDLocationListener() {
-//		public void onReceivePoi(BDLocation location) {
-//			if (location == null) {
-//				return;
-//			}
-//		}
-//
-//		@Override
-//		public void onReceiveLocation(BDLocation location) {
-//			// 获取定位的到当前的城市
-//			cityName = location.getCity();
-//			saveLocation(location);// 将数据保存到sp中
-//			cityNametText.setText(cityName.substring(0,cityName.length()-1));
-//			sharePreferenceUtil.setCity(cityName.substring(0,cityName.length()-1));
-//			MyToast.showLong(MainActivity.this, "定位后的城市是" + cityName);
-//			//updateWeatherInfo(cityName);//定位成功请求天气数据
-//			// 定位成功后停止定位
-//			mLocationClient.stop();
-//		}
-//	};
-
 	// 保存当前用户的地址信息
 	private void saveLocation(BDLocation location) {
 		SharedPreferences sharedPreferences = getSharedPreferences(Constants.USER_LOCATION_INFORMATION,
 				Context.MODE_PRIVATE); // 私有数据
 		Editor editor = sharedPreferences.edit();// 获取编辑器
-		
-		System.err.println("MainActivity-----中获取到的坐标是--经纬度---"+String.valueOf(location.getLongitude())+","+String.valueOf(location.getLongitude()));
 		
 		editor.putString("province", location.getProvince());
 		editor.putString("city", location.getCity());
