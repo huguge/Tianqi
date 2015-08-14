@@ -40,6 +40,7 @@ public class CityListActivity extends Activity {
 	private ClearEditText mClearEditText;
 	private Application mApplication;
 	private SharePreferenceUtil sharePreferenceUtil;
+	
 	/**
 	 * 汉字转换成拼音的类
 	 */
